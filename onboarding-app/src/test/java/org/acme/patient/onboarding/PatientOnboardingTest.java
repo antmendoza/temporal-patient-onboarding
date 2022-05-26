@@ -8,7 +8,8 @@ import io.temporal.client.WorkflowOptions;
 import io.temporal.testing.TestWorkflowEnvironment;
 import io.temporal.testing.WorkflowReplayer;
 import io.temporal.worker.Worker;
-import org.acme.patient.onboarding.app.ServiceExecutor;
+import org.acme.patient.onboarding.app.NotificationService;
+import org.acme.patient.onboarding.app.PatientService;
 import org.acme.patient.onboarding.model.Doctor;
 import org.acme.patient.onboarding.model.Hospital;
 import org.acme.patient.onboarding.model.Patient;
@@ -41,7 +42,8 @@ public class PatientOnboardingTest {
     public void testMockedPatientOnboarding() {
 
         // mock our workflow activities
-        ServiceExecutor activities = mock(ServiceExecutor.class);
+        PatientService patientService = mock(PatientService.class);
+        NotificationService notificationService = mock(NotificationService.class);
 
         Patient testPatient = new Patient("123", "Tester", "22", "30041", "", "", "Asthma", "tester@test.io", "555-55-5555", "TEXT");
         Patient onboardedPatient = new Patient("123", "Tester", "22", "30041", "", "", "Asthma", "tester@test.io", "555-55-5555", "TEXT");
@@ -51,14 +53,14 @@ public class PatientOnboardingTest {
         onboardedPatient.setOnboarded("yes");
 
         // mock activity methods
-        when(activities.assignHospitalToPatient(anyString())).thenReturn(testHospital);
-        when(activities.assignDoctorToPatient(anyString())).thenReturn(testDoctor);
-        when(activities.assignDoctorToPatient(anyString())).thenReturn(testDoctor);
-        when(activities.finalizeOnboarding()).thenReturn("yes");
-        doNothing().when(activities).notifyViaEmail(anyString());
-        doNothing().when(activities).notifyViaText(anyString());
+        when(patientService.assignHospitalToPatient(anyString())).thenReturn(testHospital);
+        when(patientService.assignDoctorToPatient(anyString())).thenReturn(testDoctor);
+        when(patientService.assignDoctorToPatient(anyString())).thenReturn(testDoctor);
+        when(patientService.finalizeOnboarding()).thenReturn("yes");
+        doNothing().when(notificationService).notifyViaEmail(anyString());
+        doNothing().when(notificationService).notifyViaText(anyString());
 
-        worker.registerActivitiesImplementations(activities);
+        worker.registerActivitiesImplementations(patientService);
 
         testEnv.start();
 

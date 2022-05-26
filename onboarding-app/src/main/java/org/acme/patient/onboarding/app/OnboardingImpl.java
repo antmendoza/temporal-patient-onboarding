@@ -6,7 +6,8 @@ import org.acme.patient.onboarding.utils.ActivityStubUtils;
 public class OnboardingImpl implements Onboarding {
 
 
-    ServiceExecutor serviceExecutor = ActivityStubUtils.getActivitiesStub();
+    PatientService patientService = ActivityStubUtils.getActivitiesStub(PatientService.class);
+    NotificationService notificationService = ActivityStubUtils.getActivitiesStub(NotificationService.class);
 
     String status;
     Patient onboardingPatient;
@@ -19,29 +20,29 @@ public class OnboardingImpl implements Onboarding {
             // 1. assign hospital to patient
             status = "Assigning hospital to patient: " + onboardingPatient.getName();
             onboardingPatient.setHospital(
-                    serviceExecutor.assignHospitalToPatient(onboardingPatient.getZip()));
+                    patientService.assignHospitalToPatient(onboardingPatient.getZip()));
 
             // 2. assign doctor to patient
             status = "Assigning doctor to patient: " + onboardingPatient.getName();
             onboardingPatient.setDoctor(
-                    serviceExecutor.assignDoctorToPatient(onboardingPatient.getCondition()));
+                    patientService.assignDoctorToPatient(onboardingPatient.getCondition()));
 
             // 3. notify patient with preferred contact method
             status = "Notifying patient: " + onboardingPatient.getName();
             switch (onboardingPatient.getContactMethod()) {
                 case PHONE:
-                    serviceExecutor.notifyViaEmail(onboardingPatient.getEmail());
+                    notificationService.notifyViaEmail(onboardingPatient.getEmail());
                     break;
 
                 case TEXT:
-                    serviceExecutor.notifyViaText(onboardingPatient.getPhone());
+                    notificationService.notifyViaText(onboardingPatient.getPhone());
                     break;
             }
 
             // 4. finalize onboarding
             status = "Finalizing onboarding for: " + onboardingPatient.getName();
             patient.setOnboarded(
-                    serviceExecutor.finalizeOnboarding());
+                    patientService.finalizeOnboarding());
 
         } catch (Exception e) {
             patient.setOnboarded("no");

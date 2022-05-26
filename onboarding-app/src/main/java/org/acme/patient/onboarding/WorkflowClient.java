@@ -6,9 +6,10 @@ import io.temporal.client.WorkflowOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
+import org.acme.patient.onboarding.app.NotificationServiceImpl;
 import org.acme.patient.onboarding.app.Onboarding;
 import org.acme.patient.onboarding.app.OnboardingImpl;
-import org.acme.patient.onboarding.app.ServiceExecutorImpl;
+import org.acme.patient.onboarding.app.PatientServiceImpl;
 import org.acme.patient.onboarding.model.Patient;
 import org.acme.patient.onboarding.utils.NotificationServiceClient;
 import org.acme.patient.onboarding.utils.OnboardingServiceClient;
@@ -40,7 +41,9 @@ public class WorkflowClient {
         Worker worker = factory.newWorker(taskQueue);
 
         worker.registerWorkflowImplementationTypes(OnboardingImpl.class);
-        worker.registerActivitiesImplementations(new ServiceExecutorImpl(serviceClient, notificationServiceClient));
+        worker.registerActivitiesImplementations(
+                new PatientServiceImpl(serviceClient),
+                new NotificationServiceImpl(notificationServiceClient));
 
         factory.start();
     }
