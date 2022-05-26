@@ -77,7 +77,7 @@ public class PatientOnboardingTest {
         Assertions.assertEquals("yes", resultPatient.getOnboarded());
     }
 
-    //@Test
+    //@Testcache
     public void testOnboardingReplay() throws Exception {
         WorkflowReplayer.replayWorkflowExecutionFromResource(
                 "testrun.json", OnboardingImpl.class);

@@ -11,6 +11,7 @@
     <module>onboarding-model</module>
     <module>onboarding-app</module>
     <module>onboarding-service</module>
+    <module>onboarding-notification</module>
   </modules>
 
 </project>

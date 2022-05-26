@@ -2,15 +2,19 @@ package org.acme.patient.onboarding.app;
 
 import org.acme.patient.onboarding.model.Doctor;
 import org.acme.patient.onboarding.model.Hospital;
-import org.acme.patient.onboarding.model.Patient;
+import org.acme.patient.onboarding.utils.NotificationServiceClient;
 import org.acme.patient.onboarding.utils.OnboardingServiceClient;
 
 public class ServiceExecutorImpl implements ServiceExecutor {
 
     private OnboardingServiceClient serviceClient;
+    private NotificationServiceClient notificationServiceClient;
 
-    public ServiceExecutorImpl(OnboardingServiceClient serviceClient) {
+    public ServiceExecutorImpl(
+            OnboardingServiceClient serviceClient, final NotificationServiceClient notificationServiceClient
+    ) {
         this.serviceClient = serviceClient;
+        this.notificationServiceClient = notificationServiceClient;
     }
 
     @Override
@@ -32,14 +36,14 @@ public class ServiceExecutorImpl implements ServiceExecutor {
 
     @Override
     public void notifyViaEmail(String email) {
-        serviceClient.notifyPatient(email);
+        notificationServiceClient.notifyPatient(email);
         // simulate some work...
         sleep(5);
     }
 
     @Override
     public void notifyViaText(String phone) {
-        serviceClient.notifyPatient(phone);
+        notificationServiceClient.notifyPatient(phone);
         // simulate some work...
         sleep(5);
     }

@@ -20,7 +20,4 @@ public interface OnboardingServiceClient {
     @Path("assigndoctor")
     Doctor assignDoctorToPatient(String condition);
 
-    @POST
-    @Path("notify")
-    Patient notifyPatient(String email);
 }
